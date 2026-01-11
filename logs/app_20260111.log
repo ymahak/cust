@@ -1,0 +1,6 @@
+2026-01-11 23:39:07 - customer_support - ERROR - Support agent error: generate_response() got an unexpected keyword argument 'message'
+2026-01-11 23:39:07 - customer_support - ERROR - Support agent error: generate_response() got an unexpected keyword argument 'message'
+2026-01-11 23:39:07 - customer_support - ERROR - Escalation error: EscalationAgent.create_escalation() got an unexpected keyword argument 'source_agent'
+2026-01-11 23:39:07 - customer_support - ERROR - Escalation error: EscalationAgent.create_escalation() got an unexpected keyword argument 'source_agent'
+2026-01-11 23:39:07 - customer_support - ERROR - Save error: Database objects do not implement truth value testing or bool(). Please compare with None instead: database is not None
+2026-01-11 23:39:07 - customer_support - ERROR - Save error: Database objects do not implement truth value testing or bool(). Please compare with None instead: database is not None
