@@ -1,31 +1,32 @@
 import jwt
-from datetime import datetime, timedelta, timezone
-from typing import Dict, Optional
 import os
-from dotenv import load_dotenv
+from datetime import datetime, timedelta
+from fastapi import HTTPException, status
 
-load_dotenv()
-
-JWT_SECRET = os.getenv("JWT_SECRET", "supersecretkey")
+JWT_SECRET = os.getenv("JWT_SECRET")
 JWT_ALGORITHM = "HS256"
-JWT_EXPIRATION_HOURS = 24
+JWT_EXPIRE_HOURS = 24
 
-def create_token(data: Dict) -> str:
-    """Create JWT token"""
-    payload = {
-        **data,
-        "exp": datetime.now(timezone.utc) + timedelta(hours=JWT_EXPIRATION_HOURS),
-        "iat": datetime.now(timezone.utc)
-    }
+
+def create_token(data: dict):
+    payload = data.copy()
+    payload["exp"] = datetime.utcnow() + timedelta(hours=JWT_EXPIRE_HOURS)
+
     token = jwt.encode(payload, JWT_SECRET, algorithm=JWT_ALGORITHM)
     return token
 
-def verify_token(token: str) -> Dict:
-    """Verify and decode JWT token"""
+
+def verify_token(token: str):
     try:
         payload = jwt.decode(token, JWT_SECRET, algorithms=[JWT_ALGORITHM])
         return payload
     except jwt.ExpiredSignatureError:
-        raise ValueError("Token has expired")
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Token expired",
+        )
     except jwt.InvalidTokenError:
-        raise ValueError("Invalid token")
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid token",
+        )

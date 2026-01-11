@@ -1,37 +1,52 @@
 import logging
-import sys
-from datetime import datetime
-from pathlib import Path
+from logging.handlers import RotatingFileHandler
+import os
 
-def setup_logger(name: str = "customer_support") -> logging.Logger:
-    """Setup application logger"""
-    logger = logging.getLogger(name)
+LOG_DIR = "logs"
+LOG_FILE = "app.log"
+
+# Ensure logs directory exists
+os.makedirs(LOG_DIR, exist_ok=True)
+
+LOG_PATH = os.path.join(LOG_DIR, LOG_FILE)
+
+# ---------------- Logger Setup ----------------
+
+def setup_logger():
+    logger = logging.getLogger("ai_customer_support")
     logger.setLevel(logging.INFO)
-    
-    # Create logs directory if it doesn't exist
-    log_dir = Path("logs")
-    log_dir.mkdir(exist_ok=True)
-    
-    # File handler
-    file_handler = logging.FileHandler(
-        log_dir / f"app_{datetime.now().strftime('%Y%m%d')}.log"
-    )
-    file_handler.setLevel(logging.INFO)
-    
-    # Console handler
-    console_handler = logging.StreamHandler(sys.stdout)
-    console_handler.setLevel(logging.INFO)
-    
-    # Formatter
-    formatter = logging.Formatter(
-        '%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-        datefmt='%Y-%m-%d %H:%M:%S'
-    )
-    
-    file_handler.setFormatter(formatter)
-    console_handler.setFormatter(formatter)
-    
-    logger.addHandler(file_handler)
-    logger.addHandler(console_handler)
-    
+
+    if not logger.handlers:
+        handler = RotatingFileHandler(
+            LOG_PATH,
+            maxBytes=5 * 1024 * 1024,  # 5 MB
+            backupCount=3
+        )
+
+        formatter = logging.Formatter(
+            "%(asctime)s - %(levelname)s - %(message)s"
+        )
+
+        handler.setFormatter(formatter)
+        logger.addHandler(handler)
+
     return logger
+
+
+# Global logger instance
+_logger = setup_logger()
+
+
+# ---------------- Logging Helper ----------------
+
+def log_event(event: str, data: dict | None = None):
+    """
+    Log structured application events.
+
+    Example:
+        log_event("CHAT_REQUEST", {"intent": "refund", "escalated": True})
+    """
+    if data is None:
+        data = {}
+
+    _logger.info(f"{event} | {data}")
