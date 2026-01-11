@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { getDashboard, getMetrics } from "../api";
+import { getDashboard } from "../api";
 import "./MonitoringDashboard.css";
 
 export default function MonitoringDashboard() {

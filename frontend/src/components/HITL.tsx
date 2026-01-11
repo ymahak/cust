@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-import type { Escalation, EscalationResponse } from "../api";
+import type { Escalation } from "../api";
 import "./HITL.css";
 
 const API_URL = "http://127.0.0.1:8000/api";
@@ -19,7 +19,6 @@ export default function HITL() {
   const [loading, setLoading] = useState(false);
   const [response, setResponse] = useState("");
   const [notes, setNotes] = useState("");
-  const [editMode, setEditMode] = useState(false);
   const [originalResponse, setOriginalResponse] = useState("");
 
   useEffect(() => {
@@ -43,7 +42,6 @@ export default function HITL() {
     setSelectedEscalation(escalation);
     setResponse("");
     setNotes("");
-    setEditMode(false);
     
     // Try to get full escalation details
     try {
@@ -130,7 +128,6 @@ export default function HITL() {
       setSelectedEscalation(null);
       setResponse("");
       setNotes("");
-      setEditMode(false);
       loadEscalations();
     } catch (error: any) {
       alert(error.response?.data?.detail || "Failed to edit response");
@@ -255,7 +252,6 @@ export default function HITL() {
                     <button
                       className="btn-edit"
                       onClick={() => {
-                        setEditMode(true);
                         handleEdit();
                       }}
                       disabled={loading || !response.trim() || response === originalResponse}

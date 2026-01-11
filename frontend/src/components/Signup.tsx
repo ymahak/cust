@@ -7,7 +7,7 @@ interface SignupProps {
   onSwitchToLogin: () => void;
 }
 
-export default function Signup({ onSignup, onSwitchToLogin }: SignupProps) {
+export default function Signup({ onSwitchToLogin }: SignupProps) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
